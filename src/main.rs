@@ -7,8 +7,8 @@ use commands::{break_msg, over_msg, work_msg};
 const DEFAULT_WORK_TIME: u32 = 25;
 /// Default break time of 5 minutes.
 const DEFAULT_SLEEP_TIME: u32 = 5;
-/// Default break time of 5 minutes.
-const DEFAULT_NUM_CYCLES: usize = 3;
+/// Default number of cycles.
+const DEFAULT_NUM_CYCLES: usize = 5;
 /// Message printed if "help" is passed as an argument.
 const HELP_MESSAGE: &str = include_str!("../help_message.txt");
 
