@@ -25,7 +25,8 @@ pomo 25 5 5
 ```
 
 # TODO
+- [x] Allow a single numeric argument to define the number of cycles with the default timer settings
+- [x] Add a default cycle count, rather than it being endless.
+- [ ] Remove endless cycle count, and use fall back to the default.
 - [ ] Drop requirement for `terminal-notifier`, either by including notification functionality in this project or, ideally, by not crashing
-- [ ] Allow a single numeric argument to define the number of cycles with the default timer settings
-- [ ] Add a default cycle count, rather than it being endless.
 - [ ] Are there methods of running the timer in parallel that can be included here directly?
