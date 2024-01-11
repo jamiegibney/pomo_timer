@@ -21,7 +21,7 @@ fn main() {
             // if the finish notification fails
             if let Err(e) = over_msg() {
                 eprintln!(
-                    "Pomodoro timer failed to print finished method: {e}"
+                    "Pomodoro timer failed to print finished message: {e}"
                 );
                 exit(1);
             }
