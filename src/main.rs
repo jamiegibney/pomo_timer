@@ -7,6 +7,8 @@ use commands::{break_msg, over_msg, work_msg};
 const DEFAULT_WORK_TIME: u32 = 25;
 /// Default break time of 5 minutes.
 const DEFAULT_SLEEP_TIME: u32 = 5;
+/// Default break time of 5 minutes.
+const DEFAULT_NUM_CYCLES: usize = 3;
 /// Message printed if "help" is passed as an argument.
 const HELP_MESSAGE: &str = include_str!("../help_message.txt");
 
@@ -51,18 +53,31 @@ impl Pomo {
     /// Captures the necessary state from the command line args.
     pub fn new() -> Self {
         let mut args = env::args().skip(1);
+        let mut num_loops = Some(DEFAULT_NUM_CYCLES);
 
         if args.len() == 1 {
             // this will not panic as we've already check for the number of arguments.
-            let arg = env::args().nth(1).unwrap();
+            let arg = args.next().unwrap();
 
+            // if "help" is found
             if contains_help(&arg) {
                 print_help_message();
                 exit(0);
             }
-            // else if arg.chars().any(|ch| ch.is_numeric()) {
-            //
-            // }
+            // if the argument is valid
+            else if arg.chars().all(|ch| ch.is_numeric()) {
+                if let Ok(value) = arg.parse() {
+                    num_loops = Some(value);
+                }
+            }
+            else {
+                eprintln!("ERROR: unknown argument \"{arg}\"");
+                exit(1);
+            }
+        }
+        // if we only receive the timing arguments, we loop endlessly?
+        else if args.len() == 2 {
+            num_loops = None;
         }
 
         // obtain the work time, if provided
@@ -79,8 +94,11 @@ impl Pomo {
 
         // obtain the number of loops, if provided. else set to None, which will
         // run an endless loop.
-        let num_loops: Option<usize> =
-            args.next().and_then(|v| v.parse::<usize>().ok());
+        if let Some(arg_3) = args.next() {
+            if let Ok(value) = arg_3.parse() {
+                num_loops = Some(value);
+            }
+        }
 
         Self { work_time, break_time, num_loops }
     }
@@ -158,6 +176,7 @@ fn parse_plural(value: u32, message: &str) -> String {
     format!("{message}{}", if value > 1 { "s" } else { "" })
 }
 
+/// Returns `true` if `arg` contains "help".
 fn contains_help(arg: &str) -> bool {
     arg.to_lowercase().contains("help")
 }
