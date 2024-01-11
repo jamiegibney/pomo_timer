@@ -22,7 +22,7 @@ examples:
 
 # Installing
 
-Pre-built binaries are available on the [releases](TODO!) page.
+Pre-built binaries are available on the [releases](https://github.com/jamiegibney/pomo_timer/releases) page.
 
 After downloading, run this command to create a symlink so you can run the command anywhere:
 ```bash
