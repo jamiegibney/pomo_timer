@@ -52,37 +52,30 @@ impl Pomo {
     pub fn new() -> Self {
         let mut args = env::args().skip(1);
 
-        // TODO: if a single, numeric argument is passed, use it for the number of
-        // loops with the default timings?
-        let one_arg_passed = args.len() == 1;
+        if args.len() == 1 {
+            // this will not panic as we've already check for the number of arguments.
+            let arg = env::args().nth(1).unwrap();
+
+            if contains_help(&arg) {
+                print_help_message();
+                exit(0);
+            }
+            // else if arg.chars().any(|ch| ch.is_numeric()) {
+            //
+            // }
+        }
 
         // obtain the work time, if provided
         let work_time = args.next().map_or(DEFAULT_WORK_TIME, |v| {
-            v.parse::<u32>().map_or_else(
-                |_| {
-                    // if "help" detected, print the help message
-                    if v.to_lowercase().contains("help") {
-                        print_help_message();
-                        exit(0);
-                    }
-
-                    DEFAULT_WORK_TIME
-                },
-                |value| value,
-            )
+            v.parse::<u32>()
+                .map_or_else(|_| DEFAULT_WORK_TIME, |value| value)
         });
 
         // obtain the work time, if provided
-        let break_time = args.next().map_or_else(|| {
-            // warn if only one (non-"help") argument was passed, as this may seem ambiguous
-            if one_arg_passed {
-                println!("WARNING: only one argument passed, using default break timer of {DEFAULT_SLEEP_TIME} minutes"); 
-            }
-
-            DEFAULT_SLEEP_TIME
-        }, |v| {
-            v.parse::<u32>().map_or(DEFAULT_SLEEP_TIME, |value| value)
-        });
+        let break_time = args.next().map_or_else(
+            || DEFAULT_SLEEP_TIME,
+            |v| v.parse::<u32>().map_or(DEFAULT_SLEEP_TIME, |value| value),
+        );
 
         // obtain the number of loops, if provided. else set to None, which will
         // run an endless loop.
@@ -163,4 +156,8 @@ fn print_help_message() {
 /// Parses a string to deal with plural values (only appends an "s" if the value > 1).
 fn parse_plural(value: u32, message: &str) -> String {
     format!("{message}{}", if value > 1 { "s" } else { "" })
+}
+
+fn contains_help(arg: &str) -> bool {
+    arg.to_lowercase().contains("help")
 }
