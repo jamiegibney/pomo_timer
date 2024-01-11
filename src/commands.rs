@@ -1,5 +1,5 @@
-use std::{io::Result, process::Command};
 use super::parse_plural;
+use std::{io::Result, process::Command};
 
 /// Sends the work message to `terminal-notifier`.
 pub fn work_msg(work_time_mins: u32) -> Result<()> {
@@ -14,14 +14,12 @@ pub fn work_msg(work_time_mins: u32) -> Result<()> {
 }
 
 /// Sends the break message to `terminal-notifier`.
-pub fn break_msg(break_time_mins: u32, num_loops: Option<usize>) -> Result<()> {
+pub fn break_msg(break_time_mins: u32, num_loops: usize) -> Result<()> {
     let msg = format!(
-        "Work over — take a break ({break_time_mins:.0} {}{})",
+        "Work over — take a break ({break_time_mins:.0} {}, {} {} remaining)",
         parse_plural(break_time_mins, "minute"),
-        num_loops.map_or(String::new(), |loops| format!(
-            ", {loops} {} remaining",
-            parse_plural(loops as u32, "cycle"),
-        ))
+        num_loops,
+        parse_plural(num_loops as u32, "cycle"),
     );
 
     terminal_notifier(&msg)?;

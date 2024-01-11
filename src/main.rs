@@ -46,14 +46,14 @@ struct Pomo {
     /// The time (in minutes) of the break cycle.
     pub break_time: u32,
     /// The optional number of timer loops.
-    pub num_loops: Option<usize>,
+    pub num_loops: usize,
 }
 
 impl Pomo {
     /// Captures the necessary state from the command line args.
     pub fn new() -> Self {
         let mut args = env::args().skip(1);
-        let mut num_loops = Some(DEFAULT_NUM_CYCLES);
+        let mut num_loops = DEFAULT_NUM_CYCLES;
 
         if args.len() == 1 {
             // this will not panic as we've already check for the number of arguments.
@@ -67,17 +67,13 @@ impl Pomo {
             // if the argument is valid
             else if arg.chars().all(|ch| ch.is_numeric()) {
                 if let Ok(value) = arg.parse() {
-                    num_loops = Some(value);
+                    num_loops = value;
                 }
             }
             else {
                 eprintln!("ERROR: unknown argument \"{arg}\"");
                 exit(1);
             }
-        }
-        // if we only receive the timing arguments, we loop endlessly?
-        else if args.len() == 2 {
-            num_loops = None;
         }
 
         // obtain the work time, if provided
@@ -95,9 +91,11 @@ impl Pomo {
         // obtain the number of loops, if provided. else set to None, which will
         // run an endless loop.
         if let Some(arg_3) = args.next() {
-            if let Ok(value) = arg_3.parse() {
-                num_loops = Some(value);
-            }
+            arg_3.parse().map_or_else(|_| {
+                eprintln!("WARNING: unknown argument {arg_3}; using default cycle count of {DEFAULT_NUM_CYCLES}");
+            }, |value| {
+                num_loops = value;
+            });
         }
 
         Self { work_time, break_time, num_loops }
@@ -114,50 +112,33 @@ impl Pomo {
         );
 
         println!(
-            "{msg}{}",
-            self.num_loops.as_ref().map_or_else(
-                String::new,
-                |num_loops| format!(
-                    ", {num_loops} {}",
-                    parse_plural(*num_loops as u32, "cycle")
-                )
-            )
+            "{msg}, {} {}",
+            self.num_loops,
+            parse_plural(self.num_loops as u32, "cycle"),
         );
     }
 
     /// Runs the timer.
     pub fn run(&self) -> Result<()> {
-        // if a number of loops is provided...
-        if let Some(num_loops) = self.num_loops {
-            let mut counter = num_loops;
+        let mut counter = self.num_loops;
 
-            while counter > 0 {
-                counter -= 1;
+        while counter > 0 {
+            counter -= 1;
 
-                work_msg(self.work_time)?;
-                sleep_for_seconds(self.work_time * 60);
-
-                // we don't need to send a message or sleep for the break if this is
-                // the final cycle.
-                if counter == 0 {
-                    break;
-                }
-
-                break_msg(self.break_time, Some(counter))?;
-                sleep_for_seconds(self.break_time * 60);
-            }
-
-            return Ok(());
-        }
-
-        // otherwise, we run an endless loop!
-        loop {
             work_msg(self.work_time)?;
             sleep_for_seconds(self.work_time * 60);
 
-            break_msg(self.break_time, None)?;
+            // we don't need to send a message or sleep for the break if this is
+            // the final cycle.
+            if counter == 0 {
+                break;
+            }
+
+            break_msg(self.break_time, counter)?;
             sleep_for_seconds(self.break_time * 60);
         }
+
+        Ok(())
     }
 }
 
