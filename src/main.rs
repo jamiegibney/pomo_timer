@@ -1,6 +1,7 @@
+use std::{env, io::Result, process::exit, thread::sleep, time::Duration};
+
 mod commands;
 use commands::{break_msg, over_msg, work_msg};
-use std::{env, io::Result, process::exit, thread::sleep, time::Duration};
 
 /// Default work time of 25 minutes.
 const DEFAULT_WORK_TIME: u32 = 25;
@@ -19,9 +20,7 @@ fn main() {
         Ok(()) => {
             // if the finish notification fails
             if let Err(e) = over_msg() {
-                eprintln!(
-                    "Pomodoro timer failed to print finished method: {e}"
-                );
+                eprintln!("Pomodoro timer failed to print finished method: {e}");
                 exit(1);
             }
         }
@@ -51,7 +50,7 @@ impl Pomo {
     pub fn new() -> Self {
         let mut args = env::args().skip(1);
 
-        // TODO: if a single, numeric argument is passed, use it for the number of 
+        // TODO: if a single, numeric argument is passed, use it for the number of
         // loops with the default timings?
         let one_arg_passed = args.len() == 1;
 
@@ -78,17 +77,20 @@ impl Pomo {
                 println!("WARNING: only one argument passed, using default break timer of {DEFAULT_SLEEP_TIME} minutes"); 
             }
 
-            DEFAULT_SLEEP_TIME 
+            DEFAULT_SLEEP_TIME
         }, |v| {
             v.parse::<u32>().map_or(DEFAULT_SLEEP_TIME, |value| value)
         });
 
         // obtain the number of loops, if provided. else set to None, which will
         // run an endless loop.
-        let num_loops: Option<usize> =
-            args.next().and_then(|v| v.parse::<usize>().ok());
+        let num_loops: Option<usize> = args.next().and_then(|v| v.parse::<usize>().ok());
 
-        Self { work_time, break_time, num_loops }
+        Self {
+            work_time,
+            break_time,
+            num_loops,
+        }
     }
 
     /// Prints the initial starting message to `stdout`.
@@ -102,9 +104,7 @@ impl Pomo {
             "{msg}{}",
             self.num_loops
                 .as_ref()
-                .map_or_else(String::new, |num_loops| format!(
-                    ", {num_loops} times"
-                ))
+                .map_or_else(String::new, |num_loops| format!(", {num_loops} times"))
         );
     }
 
@@ -120,7 +120,7 @@ impl Pomo {
                 work_msg(self.work_time)?;
                 sleep_for_seconds(self.work_time * 60);
 
-                // we don't need to send a message or sleep for the break if this is 
+                // we don't need to send a message or sleep for the break if this is
                 // the final cycle.
                 if counter == 0 {
                     break;

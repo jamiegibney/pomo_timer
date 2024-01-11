@@ -13,9 +13,7 @@ pub fn work_msg(work_time_secs: u32) -> Result<()> {
 pub fn break_msg(break_time_secs: u32, num_loops: Option<usize>) -> Result<()> {
     let msg = format!(
         "Work over — take a break ({break_time_secs:.0} minutes{})",
-        num_loops.map_or(String::new(), |loops| format!(
-            ", {loops} cycles remaining"
-        ))
+        num_loops.map_or(String::new(), |loops| format!(", {loops} cycles remaining"))
     );
 
     terminal_notifier(&msg)?;
