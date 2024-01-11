@@ -1,0 +1,5 @@
+usage: pomo [work time (minutes)] [break time (minutes)] [number of loops]
+examples: 
+    `pomo`        -> 25 min work, 5 min break, endless loop (default)
+    `pomo 60 15`  -> 60 min work, 15 min break, endless loop 
+    `pomo 25 5 5` -> 25 min work, 5 min break, looped 5 times
