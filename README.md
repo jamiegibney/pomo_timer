@@ -1,27 +1,37 @@
 # `pomo`
-Basic Pomodoro timer for the command line which uses `terminal-notifier`.
+Basic Pomodoro timer for the command line on macOS which uses `terminal-notifier`.
 
 ### Requires [terminal-notifier](https://github.com/julienXX/terminal-notifier).
 
 # Usage
-To see the valid usage, run:
-```bash
-pomo help
+```shell
+$ pomo help
+usage: 
+    pomo
+    pomo [number of cycles]
+    pomo [work time (minutes)] [break time (minutes)]
+    pomo [work time (minutes)] [break time (minutes)] [number of cycles]
+examples: 
+    `pomo`         -> 25 min work, 5 min break,  5 cycles (default)
+    `pomo 1`       -> 25 min work, 5 min break,  1 cycle
+    `pomo 60 15`   -> 60 min work, 15 min break, 5 cycles 
+    `pomo 60 15 3` -> 60 min work, 15 min break, 3 cycles
 ```
 
-To endlessly run a 25/5 Pomodoro cycle, run:
+# Install
+
+Pre-built binaries are available on the [releases](TODO!) page.
+
+After downloading, run this command to create a symlink so you can run the command anywhere:
 ```bash
-pomo
+ln -si path/to/downloaded/file /usr/local/bin/pomo
 ```
 
-To set a custom work/break time (in minutes), you may run something like:
+Alternatively, to install from source, simply clone the repository and run [`install.sh`](./install.sh), as below. Requires Rust `1.75.0` or above.
 ```bash
-pomo 60 15
-```
-
-A third argument will run a certain number of cycles. E.g., for 5 cycles, run:
-```bash
-pomo 25 5 5
+$ git clone https://github.com/jamiegibney/pomo_timer
+$ cd pomo_timer-master
+$ ./install.sh
 ```
 
 # TODO
