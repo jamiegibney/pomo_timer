@@ -6,7 +6,7 @@ Basic Pomodoro timer for the command line on macOS which uses `terminal-notifier
 ### Requires [terminal-notifier](https://github.com/julienXX/terminal-notifier).
 
 # Usage
-```shell
+```
 $ pomo help
 usage: 
     pomo
@@ -33,8 +33,8 @@ ln -si path/to/downloaded/file /usr/local/bin/pomo
 
 Simply clone the repository and run [`install.sh`](./install.sh), as below. Requires Rust `1.75.0` or above.
 ```bash
-$ git clone https://github.com/jamiegibney/pomo_timer
-$ cd pomo_timer-master
+$ git clone https://github.com/jamiegibney/pomo_timer.git
+$ cd pomo_timer
 $ ./install.sh
 ```
 
