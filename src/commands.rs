@@ -33,6 +33,14 @@ pub fn over_msg() -> Result<()> {
     Ok(())
 }
 
+/// Returns true if `terminal-notifier` is found.
+pub fn terminal_notifier_located() -> bool {
+    Command::new("which")
+        .args(["terminal-notifier"])
+        .output()
+        .map_or(false, |output| output.status.success())
+}
+
 /// Sends the command to `terminal-notifier`.
 fn terminal_notifier(msg: &str) -> Result<()> {
     Command::new("terminal-notifier")

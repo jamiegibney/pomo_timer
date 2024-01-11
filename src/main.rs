@@ -1,7 +1,7 @@
 use std::{env, io::Result, process::exit, thread::sleep, time::Duration};
 
 mod commands;
-use commands::{break_msg, over_msg, work_msg};
+use commands::{break_msg, over_msg, work_msg, terminal_notifier_located};
 
 /// Default work time of 25 minutes.
 const DEFAULT_WORK_TIME: u32 = 25;
@@ -13,6 +13,12 @@ const DEFAULT_NUM_CYCLES: usize = 5;
 const HELP_MESSAGE: &str = include_str!("../help_message.txt");
 
 fn main() {
+    // check for the presence of terminal-notifier
+    if !terminal_notifier_located() {
+        eprintln!("ERROR: failed to locate terminal-notifier. Please install it here:\nhttps://github.com/julienXX/terminal-notifier");
+        exit(1);
+    }
+
     // obtain data from command line args
     let pomo = Pomo::new();
     pomo.print_start_message();
@@ -30,8 +36,7 @@ fn main() {
         }
         Err(e) => {
             // the timer failed somewhere (i.e. terminal-notifier is not found)
-            eprintln!("Pomodoro timer encountered an error: {e}");
-            eprintln!("Do you have `terminal-notifier` installed?");
+            eprintln!("Pomodoro timer encountered an error:\n{e}");
             exit(1);
         }
     };
