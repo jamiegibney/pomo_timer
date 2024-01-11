@@ -6,6 +6,7 @@ function get_abs_path() {
 
 function create_link() {
     local abs_path=$(get_abs_path "$1")
+    chmod +x $abs_path
     ln -si "$abs_path" /usr/local/bin/pomo
 }
 
