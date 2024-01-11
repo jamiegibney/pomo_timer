@@ -1,1 +1,0 @@
-/Users/jamiegibney/Documents/dev/Rust/playground/pomo_timer/target/release/pomo_timer: /Users/jamiegibney/Documents/dev/Rust/playground/pomo_timer/help_message.txt /Users/jamiegibney/Documents/dev/Rust/playground/pomo_timer/src/commands.rs /Users/jamiegibney/Documents/dev/Rust/playground/pomo_timer/src/main.rs

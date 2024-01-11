@@ -10,4 +10,4 @@ function create_link() {
     ln -si "$abs_path" /usr/local/bin/pomo
 }
 
-create_link ./target/release/pomo_timer
+create_link ./target/release/pomo

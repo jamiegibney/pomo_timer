@@ -20,7 +20,9 @@ fn main() {
         Ok(()) => {
             // if the finish notification fails
             if let Err(e) = over_msg() {
-                eprintln!("Pomodoro timer failed to print finished method: {e}");
+                eprintln!(
+                    "Pomodoro timer failed to print finished method: {e}"
+                );
                 exit(1);
             }
         }
@@ -84,27 +86,31 @@ impl Pomo {
 
         // obtain the number of loops, if provided. else set to None, which will
         // run an endless loop.
-        let num_loops: Option<usize> = args.next().and_then(|v| v.parse::<usize>().ok());
+        let num_loops: Option<usize> =
+            args.next().and_then(|v| v.parse::<usize>().ok());
 
-        Self {
-            work_time,
-            break_time,
-            num_loops,
-        }
+        Self { work_time, break_time, num_loops }
     }
 
     /// Prints the initial starting message to `stdout`.
     pub fn print_start_message(&self) {
         let msg = format!(
-            "Running Pomodoro timer: work {} mins, break {} mins",
-            self.work_time, self.break_time
+            "Running Pomodoro timer: work {} {}, break {} {}",
+            self.work_time,
+            parse_plural(self.work_time, "min"),
+            self.break_time,
+            parse_plural(self.break_time, "min"),
         );
 
         println!(
             "{msg}{}",
-            self.num_loops
-                .as_ref()
-                .map_or_else(String::new, |num_loops| format!(", {num_loops} times"))
+            self.num_loops.as_ref().map_or_else(
+                String::new,
+                |num_loops| format!(
+                    ", {num_loops} {}",
+                    parse_plural(*num_loops as u32, "cycle")
+                )
+            )
         );
     }
 
@@ -152,4 +158,9 @@ fn sleep_for_seconds(time_secs: u32) {
 /// Prints the help message to `stdout`.
 fn print_help_message() {
     print!("{HELP_MESSAGE}");
+}
+
+/// Parses a string to deal with plural values (only appends an "s" if the value > 1).
+fn parse_plural(value: u32, message: &str) -> String {
+    format!("{message}{}", if value > 1 { "s" } else { "" })
 }
