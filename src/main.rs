@@ -1,14 +1,14 @@
 use std::{env, io::Result, process::exit, thread::sleep, time::Duration};
 
+mod commands;
 #[cfg(test)]
 mod tests;
-mod commands;
 use commands::{break_msg, over_msg, terminal_notifier_located, work_msg};
 
 /// Default work time of 25 minutes.
 const DEFAULT_WORK_TIME: u32 = 25;
 /// Default break time of 5 minutes.
-const DEFAULT_SLEEP_TIME: u32 = 5;
+const DEFAULT_BREAK_TIME: u32 = 5;
 /// Default number of cycles.
 const DEFAULT_NUM_CYCLES: usize = 5;
 /// Message printed if "help" is passed as an argument.
@@ -59,20 +59,23 @@ struct Pomo {
 impl Pomo {
     /// Captures the necessary state from the command line args.
     pub fn new() -> Self {
-        let mut args = env::args().skip(1);
-        let mut num_loops = DEFAULT_NUM_CYCLES;
-
-        if args.len() >= 1 {
-            // this will not panic as we've already check for the number of arguments.
-            let arg = args.next().unwrap();
-
-            // if "help" is found
+        // check to see if help is present
+        for arg in env::args() {
             if contains_help(&arg) {
                 print_help_message();
                 exit(0);
             }
+        }
+
+        let mut args = env::args().skip(1);
+        let mut num_loops = DEFAULT_NUM_CYCLES;
+
+        if args.len() == 1 {
+            // this will not panic as we've already check for the number of arguments.
+            let arg = args.next().unwrap();
+
             // if the argument is valid
-            else if arg.chars().all(|ch| ch.is_numeric()) {
+            if arg.chars().all(|ch| ch.is_numeric()) {
                 if let Ok(value) = arg.parse() {
                     num_loops = value;
                 }
@@ -86,17 +89,23 @@ impl Pomo {
         // obtain the work time, if provided
         let work_time = args.next().map_or(DEFAULT_WORK_TIME, |v| {
             v.parse::<u32>()
-                .map_or_else(|_| DEFAULT_WORK_TIME, |value| value)
+                .map_or_else(|_| {
+                    eprintln!("WARNING: unknown argument {v}; using default work time of {DEFAULT_WORK_TIME} minutes");
+                    DEFAULT_WORK_TIME
+                }
+                             , |value| value)
         });
 
         // obtain the work time, if provided
         let break_time = args.next().map_or_else(
-            || DEFAULT_SLEEP_TIME,
-            |v| v.parse::<u32>().map_or(DEFAULT_SLEEP_TIME, |value| value),
+            || DEFAULT_BREAK_TIME,
+            |v| v.parse::<u32>().map_or_else(|_| {
+                    eprintln!("WARNING: unknown argument {v}; using default break time of {DEFAULT_BREAK_TIME} minutes");
+                DEFAULT_BREAK_TIME
+            }, |value| value),
         );
 
-        // obtain the number of loops, if provided. else set to None, which will
-        // run an endless loop.
+        // obtain the number of loops, if provided
         if let Some(arg_3) = args.next() {
             arg_3.parse().map_or_else(|_| {
                 eprintln!("WARNING: unknown argument {arg_3}; using default cycle count of {DEFAULT_NUM_CYCLES}");
