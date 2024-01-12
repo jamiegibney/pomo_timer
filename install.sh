@@ -13,3 +13,5 @@ function create_link() {
 }
 
 create_link ./target/release/pomo
+
+rm -rf ./target
