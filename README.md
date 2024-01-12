@@ -20,6 +20,17 @@ examples:
     `pomo 60 15 3` -> 60 min work, 15 min break, 3 cycles
 ```
 
+</br>
+
+To send the timer to the background, you may append `&` to the command. For example:
+```bash
+pomo 60 15 3 &
+```
+
+</br>
+
+To stop the timer, you can use the `fg` command to send `pomo` back to the foreground, and then exit the process with `ctrl-c`, for example.
+
 # Installing
 
 Pre-built binaries are available on the [releases](https://github.com/jamiegibney/pomo_timer/releases) page.
