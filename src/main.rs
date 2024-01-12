@@ -1,7 +1,9 @@
 use std::{env, io::Result, process::exit, thread::sleep, time::Duration};
 
+#[cfg(test)]
+mod tests;
 mod commands;
-use commands::{break_msg, over_msg, work_msg, terminal_notifier_located};
+use commands::{break_msg, over_msg, terminal_notifier_located, work_msg};
 
 /// Default work time of 25 minutes.
 const DEFAULT_WORK_TIME: u32 = 25;
@@ -10,7 +12,7 @@ const DEFAULT_SLEEP_TIME: u32 = 5;
 /// Default number of cycles.
 const DEFAULT_NUM_CYCLES: usize = 5;
 /// Message printed if "help" is passed as an argument.
-const HELP_MESSAGE: &str = include_str!("../help_message.txt");
+const HELP_MESSAGE: &str = include_str!("help_message.txt");
 
 fn main() {
     // check for the presence of terminal-notifier
@@ -60,7 +62,7 @@ impl Pomo {
         let mut args = env::args().skip(1);
         let mut num_loops = DEFAULT_NUM_CYCLES;
 
-        if args.len() == 1 {
+        if args.len() >= 1 {
             // this will not panic as we've already check for the number of arguments.
             let arg = args.next().unwrap();
 
