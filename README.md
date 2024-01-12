@@ -37,10 +37,3 @@ $ git clone https://github.com/jamiegibney/pomo_timer.git
 $ cd pomo_timer
 $ ./install.sh
 ```
-
-# TODO
-- [x] Allow a single numeric argument to define the number of cycles with the default timer settings
-- [x] Add a default cycle count, rather than it being endless.
-- [x] Remove endless cycle count, and use fall back to the default.
-- [ ] Drop requirement for `terminal-notifier`, either by including notification functionality in this project or, ideally, by not crashing
-- [ ] Are there methods of running the timer in parallel that can be included here directly?
